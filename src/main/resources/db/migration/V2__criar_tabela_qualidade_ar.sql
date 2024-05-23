@@ -1,0 +1,14 @@
+CREATE SEQUENCE SEQ_QUALIDADE_AR
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+CREATE TABLE tbl_qualidade_ar (
+    qualidade_ar_id INTEGER DEFAULT SEQ_QUALIDADE_AR.NEXTVAL NOT NULL,
+    location VARCHAR2(100),
+    pm25 NUMBER,
+    pm10 NUMBER,
+    timestamp TIMESTAMP,
+    PRIMARY KEY (qualidade_ar_id)
+);
