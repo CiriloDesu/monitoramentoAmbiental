@@ -1,5 +1,6 @@
 package br.com.fiap.monitoramento.ambiental.dto;
 
+import br.com.fiap.monitoramento.ambiental.model.Alerta;
 import br.com.fiap.monitoramento.ambiental.model.ControleIrrigacao;
 import lombok.Data;
 
@@ -35,6 +36,7 @@ public record ControleIrrigacaoDTO(Long id,
                 controleIrrigacao.getTemperatura()
         );
     }
+
 
 
 }

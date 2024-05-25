@@ -18,12 +18,12 @@ public record AlertaDTO( Long id,
                          LocalDateTime timestamp) {
 
 
-    public AlertaDTO(Alerta alertaDTO){
+    public AlertaDTO(Alerta alerta){
         this(
-                alertaDTO.getId(),
-                alertaDTO.getTipo(),
-                alertaDTO.getLocalizacao(),
-                alertaDTO.getTimestamp()
+                alerta.getId(),
+                alerta.getTipo(),
+                alerta.getLocalizacao(),
+                alerta.getTimestamp()
         );
     }
 
