@@ -1,0 +1,43 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - staging # branches usadas para deploy
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v2
+        with:
+          java-version: '21'
+
+      - name: Build with Maven
+        run: mvn clean install
+
+  deploy-to-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging' # Trigger para o ambiente de staging
+    steps:
+      - name: Deploy to Staging
+        run: |
+          docker build -t your_staging_image .
+          docker run -d -p 8080:8080 your_staging_image
+
+  deploy-to-production:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # Trigger para o ambiente de produção
+    steps:
+      - name: Deploy to Production
+        run: |
+          docker build -t your_production_image .
+          docker run -d -p 8080:8080 your_production_image
