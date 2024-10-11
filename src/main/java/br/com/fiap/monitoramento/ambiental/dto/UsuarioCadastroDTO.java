@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record UsuarioCadastroDTO(
-        Long usuarioId,
+        String usuarioId,
 
         @NotBlank(message = "nome do usuário obrigatório!")
         String nome,

@@ -2,6 +2,7 @@ package br.com.fiap.monitoramento.ambiental.controller;
 
 import br.com.fiap.monitoramento.ambiental.dto.QualidadeDoArDTO;
 import br.com.fiap.monitoramento.ambiental.model.QualidadeDoAr;
+import br.com.fiap.monitoramento.ambiental.repository.QualidadeDoArRepository;
 import br.com.fiap.monitoramento.ambiental.service.QualidadeDoArService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class QualidadeDoArController {
     @Autowired
     private QualidadeDoArService qualidadeDoArService;
 
+    @Autowired
+    private QualidadeDoArRepository qualidadeDoArRepository;
+
 
     @PostMapping("/qualidade")
     @ResponseStatus(HttpStatus.CREATED)
@@ -30,25 +34,25 @@ public class QualidadeDoArController {
 
     @GetMapping("/qualidades")
     @ResponseStatus(HttpStatus.OK)
-    public Page<QualidadeDoArDTO> listarTodos(Pageable pageable){
-        return qualidadeDoArService.listarTodos(pageable);
+    public List<QualidadeDoAr> listarTodos(){
+        return qualidadeDoArRepository.findAll();
     }
 
     @GetMapping("/qualidade/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public QualidadeDoArDTO buscarPorId(@PathVariable Long id){
+    public QualidadeDoArDTO buscarPorId(@PathVariable String id){
         return qualidadeDoArService.buscarPorId(id);
     }
 
     @DeleteMapping("/qualidade/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void excluir(@PathVariable Long id){
+    public void excluir(@PathVariable String id){
         qualidadeDoArService.excluir(id);
     }
 
     @PutMapping("/qualidade")
     @ResponseStatus(HttpStatus.OK)
-    public QualidadeDoAr atualizar(@RequestBody QualidadeDoAr qualidadeDoAr){
+    public QualidadeDoArDTO atualizar(@RequestBody QualidadeDoArDTO qualidadeDoAr){
         return qualidadeDoArService.atualizar(qualidadeDoAr);
     }
 

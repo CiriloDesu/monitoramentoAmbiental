@@ -1,12 +1,12 @@
 package br.com.fiap.monitoramento.ambiental.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "tbl_controle_irrigacao")
+@Document(collection = "controle_de_irrigacao")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,17 +14,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 public class ControleIrrigacao {
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "SEQ_IRRIGACAO"
-    )
-    @SequenceGenerator(
-            name = "SEQ_IRRIGACAO",
-            sequenceName = "SEQ_IRRIGACAO",
-            allocationSize = 1
-    )
-    @Column(name = "irrigacao_id")
-    private Long id;
+    private String id; // MongoDB geralmente usa String para o ID, mas você pode usar ObjectId se preferir.
+
     private String area;
     private String status;
     private LocalDateTime programadoPara;

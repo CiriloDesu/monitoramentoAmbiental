@@ -13,53 +13,52 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class AlertaController {
+
     @Autowired
     private AlertaService alertaService;
-
+    @Autowired
+    private AlertaRepository alertaRepository;
 
     @PostMapping("/alerta")
     @ResponseStatus(HttpStatus.CREATED)
-    public AlertaDTO gravar(@RequestBody @Valid AlertaDTO alertaDTO){
+    public AlertaDTO gravar(@RequestBody @Valid AlertaDTO alertaDTO) {
         return alertaService.criarAlerta(alertaDTO);
     }
 
     @GetMapping("/alertas")
     @ResponseStatus(HttpStatus.OK)
-    public Page<AlertaDTO> listarTodos(Pageable pageable){
-        return alertaService.listarTodos(pageable);
+    public Page<Alerta> listarTodos(Pageable pageable) {
+        return alertaRepository.findAll(pageable);
     }
 
     @GetMapping("/alerta/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public AlertaDTO buscarPorId(@PathVariable Long id){
+    public AlertaDTO buscarPorId(@PathVariable String id) { // Alterado de Long para String
         return alertaService.buscarPorId(id);
     }
 
     @DeleteMapping("/alerta/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void excluir(@PathVariable Long id){
+    public void excluir(@PathVariable String id) { // Alterado de Long para String
         alertaService.excluir(id);
     }
 
-    @PutMapping("/alerta")
-    @ResponseStatus(HttpStatus.OK)
-    public Alerta atualizar(@RequestBody Alerta alerta){
-        return alertaService.atualizar(alerta);
+    @PutMapping("/alerta/{id}")
+    public AlertaDTO atualizarAlerta(@PathVariable String id, @RequestBody AlertaDTO alertaDTO) {
+        return alertaService.atualizarAlerta(id, alertaDTO);
     }
+
+
 
     @GetMapping(value = "/alertas", params = {"dataInicial", "dataFinal"})
     public List<AlertaDTO> listarPorPeriodo(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicial,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFinal
-    ){
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFinal) {
         return alertaService.listarAlertasPorPeriodo(dataInicial, dataFinal);
     }
 }
-
-

@@ -1,31 +1,30 @@
 package br.com.fiap.monitoramento.ambiental.dto;
 
-import br.com.fiap.monitoramento.ambiental.model.Alerta;
 import br.com.fiap.monitoramento.ambiental.model.ControleIrrigacao;
-import lombok.Data;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-public record ControleIrrigacaoDTO(Long id,
+public record ControleIrrigacaoDTO(
+        String id,
 
-                                   @NotBlank(message = "Insira o tamanho da área")
-                                   String area,
+        @NotBlank(message = "Insira o tamanho da área")
+        String area,
 
-                                   @NotBlank(message = "Insira se está ativo/inativo, em espera ou concluído")
-                                   String status,
+        @NotBlank(message = "Insira se está ativo/inativo, em espera ou concluído")
+        String status,
 
-                                   @NotNull(message = "Inserir data e hora com minutos e segundos!")
-                                   LocalDateTime programadoPara,
+        @NotNull(message = "Inserir data e hora com minutos e segundos!")
+        LocalDateTime programadoPara,
 
-                                   @NotNull(message = "Duração da irrigação.")
-                                   Integer duracaoEmMinutos,
-                                   Double umidade,
-                                   Double Temperatura
+        @NotNull(message = "Duração da irrigação.")
+        Integer duracaoEmMinutos,
+
+        Double umidade,
+        Double temperatura
 ) {
 
-    public ControleIrrigacaoDTO(ControleIrrigacao controleIrrigacao){
+    public ControleIrrigacaoDTO(ControleIrrigacao controleIrrigacao) {
         this(
                 controleIrrigacao.getId(),
                 controleIrrigacao.getArea(),
@@ -36,7 +35,4 @@ public record ControleIrrigacaoDTO(Long id,
                 controleIrrigacao.getTemperatura()
         );
     }
-
-
-
 }

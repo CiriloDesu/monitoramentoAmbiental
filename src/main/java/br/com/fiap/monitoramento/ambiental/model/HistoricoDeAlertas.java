@@ -6,18 +6,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Document(collection = "qualidade_do_ar")
+@Document(collection = "historico_alertas")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class QualidadeDoAr {
-
+public class HistoricoDeAlertas {
     @Id
-    private String id;  // Use String for the ID in MongoDB
-    private String location;
-    private Double pm25;
-    private Double pm10;
+    private String alertaId;
+    private String tipo;
+    private String localizacao;
     private LocalDateTime timestamp;
+    private String alteracao;
 }

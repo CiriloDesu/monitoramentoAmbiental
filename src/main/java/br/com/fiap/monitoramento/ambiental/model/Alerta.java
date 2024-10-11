@@ -1,30 +1,22 @@
 package br.com.fiap.monitoramento.ambiental.model;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "tbl_alertas")
+@Document(collection = "alerta")  // Especifica a coleção no MongoDB
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
 public class Alerta {
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "SEQ_ALERTA"
-    )
-    @SequenceGenerator(
-            name = "SEQ_ALERTA",
-            sequenceName = "SEQ_ALERTA",
-            allocationSize = 1
-    )
-    @Column(name = "alerta_id")
-    private Long id;
+
+    @Id  // Usar o identificador padrão do MongoDB
+    private String id;  // Pode ser String ou ObjectId (tipo específico do MongoDB)
+
     private String tipo; // inundações, incêndios florestais e terremotos
     private String localizacao;
     private LocalDateTime timestamp;

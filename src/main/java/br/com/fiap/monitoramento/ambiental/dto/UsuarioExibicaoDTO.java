@@ -4,7 +4,7 @@ import br.com.fiap.monitoramento.ambiental.model.Usuario;
 import br.com.fiap.monitoramento.ambiental.model.UsuarioRole;
 
 public record UsuarioExibicaoDTO(
-        Long usuarioId,
+        String usuarioId,
         String nome,
         String email,
         UsuarioRole role

@@ -4,6 +4,7 @@ import br.com.fiap.monitoramento.ambiental.dto.AlertaDTO;
 import br.com.fiap.monitoramento.ambiental.dto.ControleIrrigacaoDTO;
 import br.com.fiap.monitoramento.ambiental.model.Alerta;
 import br.com.fiap.monitoramento.ambiental.model.ControleIrrigacao;
+import br.com.fiap.monitoramento.ambiental.repository.ControleIrrigacaoRepository;
 import br.com.fiap.monitoramento.ambiental.service.ControleIrrigacaoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class ControleIrrigacaoController {
     @Autowired
     private ControleIrrigacaoService controleIrrigacaoService;
 
+    @Autowired
+    private ControleIrrigacaoRepository controleIrrigacaoRepository;
+
 
     @PostMapping("/irrigacao")
     @ResponseStatus(HttpStatus.CREATED)
@@ -32,25 +36,25 @@ public class ControleIrrigacaoController {
 
     @GetMapping("/irrigacoes")
     @ResponseStatus(HttpStatus.OK)
-    public Page<ControleIrrigacaoDTO> listarTodos(Pageable pageable){
-        return controleIrrigacaoService.listarTodos(pageable);
+    public List<ControleIrrigacao> listarTodos(){
+        return controleIrrigacaoRepository.findAll();
     }
 
     @GetMapping("/irrigacao/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ControleIrrigacaoDTO buscarPorId(@PathVariable Long id){
+    public ControleIrrigacaoDTO buscarPorId(@PathVariable String id){
         return controleIrrigacaoService.buscarPorId(id);
     }
 
     @DeleteMapping("/irrigacao/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void excluir(@PathVariable Long id){
+    public void excluir(@PathVariable String id){
         controleIrrigacaoService.excluir(id);
     }
 
     @PutMapping("/irrigacao")
     @ResponseStatus(HttpStatus.OK)
-    public ControleIrrigacao atualizar(@RequestBody ControleIrrigacao controleIrrigacao){
+    public ControleIrrigacaoDTO atualizar(@RequestBody ControleIrrigacaoDTO controleIrrigacao){
         return controleIrrigacaoService.atualizar(controleIrrigacao);
     }
 

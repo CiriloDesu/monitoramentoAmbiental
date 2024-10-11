@@ -1,7 +1,8 @@
 package br.com.fiap.monitoramento.ambiental.model;
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,8 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Entity
-@Table(name = "usuarios_mb")
+@Document(collection = "usuarios")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,32 +18,17 @@ import java.util.List;
 @EqualsAndHashCode
 public class Usuario implements UserDetails {
 
-
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "SEQ_USUARIOSMB"
-    )
-    @SequenceGenerator(
-            name = "SEQ_USUARIOSMB",
-            sequenceName = "SEQ_USUARIOSMB",
-            allocationSize = 1
-    )
-    @Column(name = "usuario_id")
-    private Long usuarioId;
+    private String usuarioId;  // Use String for the ID in MongoDB
 
     private String nome;
-
     private String email;
-
     private String senha;
-
-    @Enumerated(EnumType.STRING)
     private UsuarioRole role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.role == UsuarioRole.ADMIN){
+        if (this.role == UsuarioRole.ADMIN) {
             return List.of(
                     new SimpleGrantedAuthority("ROLE_ADMIN"),
                     new SimpleGrantedAuthority("ROLE_USER")

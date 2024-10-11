@@ -7,7 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-public record AlertaDTO( Long id,
+public record AlertaDTO( String id,
 
                         @NotBlank(message = "Insira o tipo de desastre: inundação, incêndio florestal ou terremoto.")
                          String tipo,

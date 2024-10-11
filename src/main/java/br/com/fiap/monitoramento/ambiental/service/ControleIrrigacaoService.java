@@ -6,7 +6,7 @@ import br.com.fiap.monitoramento.ambiental.model.ControleIrrigacao;
 import br.com.fiap.monitoramento.ambiental.repository.ControleIrrigacaoRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -19,44 +19,50 @@ import java.util.Optional;
 @Service
 public class ControleIrrigacaoService {
 
-        @Autowired
-        private ControleIrrigacaoRepository controleIrrigacaoRepository;
+    @Autowired
+    private ControleIrrigacaoRepository controleIrrigacaoRepository;
 
-        public Page<ControleIrrigacaoDTO> listarTodos(Pageable pageable){
-
-            return controleIrrigacaoRepository
-                    .findAll(pageable)
-                    .map(ControleIrrigacaoDTO::new);
-        }
-
-        public ControleIrrigacaoDTO criarIrrigacao(ControleIrrigacaoDTO controleIrrigacaoDTO){
-            ControleIrrigacao controleIrrigacao = new ControleIrrigacao();
-            BeanUtils.copyProperties(controleIrrigacaoDTO, controleIrrigacao);
-            return new ControleIrrigacaoDTO(controleIrrigacaoRepository.save(controleIrrigacao));
-        }
-
-    public ControleIrrigacaoDTO buscarPorId(Long id){
-        Optional<ControleIrrigacao> controleIrrigacaoOptional = controleIrrigacaoRepository.findById(id);
-        if (controleIrrigacaoOptional.isPresent()){
-            return new ControleIrrigacaoDTO(controleIrrigacaoOptional.get());
-        } else {
-            throw new NaoEncontradoException("Irrigação não existe!");        }
+    public List<ControleIrrigacaoDTO> listarTodos(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return controleIrrigacaoRepository
+                .findAll(pageable)
+                .map(ControleIrrigacaoDTO::new)
+                .toList();
     }
 
-        public void excluir(Long id){
-            controleIrrigacaoRepository.delete(controleIrrigacaoRepository.findById(id).get());
-        }
+    public ControleIrrigacaoDTO criarIrrigacao(ControleIrrigacaoDTO controleIrrigacaoDTO) {
+        ControleIrrigacao controleIrrigacao = new ControleIrrigacao();
+        BeanUtils.copyProperties(controleIrrigacaoDTO, controleIrrigacao);
+        return new ControleIrrigacaoDTO(controleIrrigacaoRepository.save(controleIrrigacao));
+    }
 
-        public ControleIrrigacao atualizar(ControleIrrigacao controleIrrigacao){
-            return controleIrrigacaoRepository.save(controleIrrigacao);
+    public ControleIrrigacaoDTO buscarPorId(String id) {
+        Optional<ControleIrrigacao> controleIrrigacaoOptional = controleIrrigacaoRepository.findById(id);
+        if (controleIrrigacaoOptional.isPresent()) {
+            return new ControleIrrigacaoDTO(controleIrrigacaoOptional.get());
+        } else {
+            throw new NaoEncontradoException("Irrigação não existe!");
         }
+    }
 
-    public List<ControleIrrigacaoDTO> listarPorPeriodo(LocalDate dataInicial, LocalDate dataFinal){
+    public void excluir(String id) {
+        controleIrrigacaoRepository.deleteById(id);
+    }
+
+    public ControleIrrigacaoDTO atualizar(ControleIrrigacaoDTO controleIrrigacaoDTO) {
+        ControleIrrigacao controleIrrigacao = new ControleIrrigacao();
+        BeanUtils.copyProperties(controleIrrigacaoDTO, controleIrrigacao);
+        return new ControleIrrigacaoDTO(controleIrrigacaoRepository.save(controleIrrigacao));
+    }
+
+    public List<ControleIrrigacaoDTO> listarPorPeriodo(LocalDate dataInicial, LocalDate dataFinal) {
+        LocalDateTime inicio = dataInicial.atStartOfDay();
+        LocalDateTime fim = dataFinal.atTime(LocalTime.MAX);
+
         return controleIrrigacaoRepository
-                .listarPorPeriodo(dataInicial.atStartOfDay(), dataFinal.atTime(LocalTime.MAX))
+                .findByProgramadoParaBetween(inicio, fim)
                 .stream()
                 .map(ControleIrrigacaoDTO::new)
                 .toList();
     }
-    }
-
+}
