@@ -1,0 +1,68 @@
+name: Continuous Delivery
+
+on:
+  push:
+    branches:
+      - master  # Executa o pipeline em pushs para a branch master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+
+      - name: Run tests
+        run: mvn test
+
+  deploy:
+    needs: build  # Este job depende da conclusão do job "build"
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Build Docker image
+        run: |
+          docker build -t monitoramento-ambiental:${{ github.sha }} .
+          echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker tag smonitoramento-ambiental:${{ github.sha }} $DOCKER_HUB_USERNAME/monitoramento-ambiental:${{ github.sha }}
+          docker push $DOCKER_HUB_USERNAME/monitoramento-ambiental:${{ github.sha }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'monitoramento-ambiental'  # Nome da aplicação no Azure Web App
+          images: 'monitoramentoambiental:${{ github.sha }}'
+        env:
+          AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
+          AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
