@@ -1,31 +1,22 @@
-version: '3.8'
+version: '3'
 
 services:
   oracle-db:
-    image: oracle/database:19.3.0-se2  # ou a versão que você tiver
+    image: oracleinanutshell/oracle-xe-11g
     container_name: oracle-db
-    environment:
-      - ORACLE_PWD=Oracle123  # Senha para o usuário SYS
-      - ORACLE_SID=ORCL  # Identificador do banco de dados
-      - ORACLE_CHARACTERSET=AL32UTF8  # Charset
     ports:
-      - "1521:1521"  # Porta padrão do Oracle
-      - "5500:5500"  # Porta para o Enterprise Manager
-    volumes:
-      - oracle-data:/opt/oracle/oradata  # Volume para persistência de dados
+      - "1521:1521"
+      - "5500:5500"
 
   app:
-    image: sua-imagem-do-spring  # Substitua pela imagem do seu aplicativo Spring
-    container_name: spring-app
-    environment:
-      - DATABASE_URL=jdbc:oracle:thin:@//oracle-db:1521/ORCL
-      - DATABASE_USER=sys as sysdba
-      - DATABASE_PWD=Oracle123
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "8080:8080"  # Porta do aplicativo Spring
+      - "8080:8080"
+    environment:
+      - DATABASE_URL=jdbc:oracle:thin:@oracle.fiap.com.br:1521:ORCL
+      - DATABASE_USER=rm552504
+      - DATABASE_PWD=100997
     depends_on:
-      - oracle-db  # A aplicação depende do banco de dados Oracle
-
-volumes:
-  oracle-data:
-    driver: local
+      - oracle-db
