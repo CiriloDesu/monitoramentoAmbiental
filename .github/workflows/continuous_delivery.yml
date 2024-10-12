@@ -50,13 +50,13 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t monitoramento-ambiental:${{ github.sha }} .
-          echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin
+          docker build -t monitoramentoambiental:${{ github.sha }} .
+          echo $DOCKERHUB_TOKEN | docker login -u $DOCKERHUB_USERNAME --password-stdin
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker tag smonitoramento-ambiental:${{ github.sha }} $DOCKER_HUB_USERNAME/monitoramento-ambiental:${{ github.sha }}
-          docker push $DOCKER_HUB_USERNAME/monitoramento-ambiental:${{ github.sha }}
+          docker tag monitoramentoambiental:${{ github.sha }} $DOCKERHUB_USERNAME/monitoramentoambiental:${{ github.sha }}
+          docker push $DOCKERHUB_USERNAME/monitoramentoambiental:${{ github.sha }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
@@ -64,5 +64,6 @@ jobs:
           app-name: 'monitoramento-ambiental'  # Nome da aplicação no Azure Web App
           images: 'monitoramentoambiental:${{ github.sha }}'
         env:
-          AZURE_WEBAPP_NAME: ${{ secrets.AZURE_WEBAPP_NAME }}
-          AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          AZURE_PROFILE: ${{ secrets.AZURE_PROFILE }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
